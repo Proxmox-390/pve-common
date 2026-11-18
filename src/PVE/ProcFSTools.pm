@@ -105,7 +105,9 @@ sub read_cpuinfo {
             $res->{family} = $1 if !$res->{family};
         } elsif ($line =~ m/^cpu\s+MHz\s*:\s*(\d+\.\d+)\s*$/i) {
             $res->{mhz} = $1 if !$res->{mhz};
-        } elsif ($line =~ m/^flags\s*:\s*(.*)$/) {
+        } elsif ($line =~ m/^cpu\s+MHz\s+dynamic\s*:\s*(\d+)\s*$/) {
+            $res->{mhz} = $1 if !$res->{mhz}; # s390x
+        } elsif ($line =~ m/^(?:flags|features)\s*:\s*(.*)$/) {
             $res->{flags} = $1 if !length $res->{flags};
         } elsif ($line =~ m/^physical id\s*:\s*(\d+)\s*$/i) {
             $cpuid = $1;
@@ -135,8 +137,8 @@ sub read_cpuinfo {
     $res->{model} = "IBM $s390_machine"
         if $res->{vendor} eq 'IBM/S390' && $res->{model} eq 'unknown' && defined($s390_machine);
 
-    # Hardware Virtual Machine (Intel VT / AMD-V)
-    $res->{hvm} = $res->{flags} =~ m/\s(vmx|svm)\s/;
+    # Hardware Virtual Machine (Intel VT / AMD-V / s390x SIE)
+    $res->{hvm} = $res->{flags} =~ m/\s(vmx|svm|sie)(?:\s|$)/;
 
     $res->{sockets} = scalar(keys %$idhash) || 1;
 
