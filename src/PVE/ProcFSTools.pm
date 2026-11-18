@@ -495,8 +495,9 @@ sub read_proc_net_route {
     my $fh = IO::File->new($filename, "r");
     return $res if !$fh;
 
+    # the kernel prints the addresses (network byte order) as host-endian integers
     my $int_to_quad = sub {
-        return join '.' => map { ($_[0] >> 8 * (3 - $_)) % 256 } (3, 2, 1, 0);
+        return join('.', unpack('C4', pack('L', $_[0])));
     };
 
     while (defined(my $line = <$fh>)) {
