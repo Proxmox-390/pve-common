@@ -71,6 +71,26 @@ my $arm_cpu_parts = {
     },
 };
 
+# s390x /proc/cpuinfo has no 'model name' either, only the numeric machine type of the IBM Z or
+# LinuxONE system the CPUs belong to; map it to the system name. Extend as needed for newer
+# machines.
+my $s390_machine_types = {
+    0x2817 => 'IBM z196',
+    0x2818 => 'IBM z114',
+    0x2827 => 'IBM zEC12',
+    0x2828 => 'IBM zBC12',
+    0x2964 => 'IBM z13',
+    0x2965 => 'IBM z13s',
+    0x3906 => 'IBM z14',
+    0x3907 => 'IBM z14 ZR1',
+    0x8561 => 'IBM z15 T01',
+    0x8562 => 'IBM z15 T02',
+    0x3931 => 'IBM z16 A01',
+    0x3932 => 'IBM z16 A02',
+    0x9175 => 'IBM z17 ME1',
+    0x9176 => 'IBM z17',
+};
+
 sub parse_cpuinfo {
     my ($fh) = @_;
 
@@ -87,13 +107,31 @@ sub parse_cpuinfo {
 
     return $res if !$fh;
 
-    my $cpuid = 0;
     my $idhash = {};
     my $count = 0;
-    my ($cpu_implementer, $cpu_part);
+    my ($cpu_implementer, $cpu_part, $s390_machine);
+
+    # topology of the CPU block currently parsed, recorded once the block ends
+    my $topo = {};
+    my $flush_topology = sub {
+        if (defined(my $socket = $topo->{socket})) {
+            # socket IDs are not necessarily unique across books and drawers (s390x)
+            my $key = join(':', $topo->{drawer} // 0, $topo->{book} // 0, $socket);
+            $idhash->{$key} = $topo->{cores} if defined($topo->{cores});
+            $idhash->{$key} //= 1;
+        }
+        $topo = {};
+    };
+
     while (defined(my $line = <$fh>)) {
-        if ($line =~ m/^processor\s*:\s*\d+\s*$/i) {
+        if ($line =~ m/^\s*$/) {
+            $flush_topology->();
+        } elsif ($line =~ m/^processor\s*:\s*\d+\s*$/i) {
             $count++;
+        } elsif ($line =~ m/^processor\s+\d+\s*:\s*version\s*=.*\bmachine\s*=\s*([0-9a-fA-F]+)/) {
+            # s390x: one 'processor N: version = .., identification = .., machine = ..' line per CPU
+            $count++;
+            $s390_machine //= hex($1);
         } elsif ($line =~ m/^model\s+name\s*:\s*(.*)\s*$/i) {
             $res->{model} = $1 if $res->{model} eq 'unknown';
         } elsif ($line =~ m/^vendor_id\s*:\s*(\S*)\s*$/i) {
@@ -102,19 +140,26 @@ sub parse_cpuinfo {
             $res->{family} = $1 if !$res->{family};
         } elsif ($line =~ m/^cpu\s+MHz\s*:\s*(\d+\.\d+)\s*$/i) {
             $res->{mhz} = $1 if !$res->{mhz};
-        } elsif ($line =~ m/^flags\s*:\s*(.*)$/) {
+        } elsif ($line =~ m/^cpu\s+MHz\s+dynamic\s*:\s*(\d+(?:\.\d+)?)\s*$/i) {
+            $res->{mhz} = $1 if !$res->{mhz}; # s390x
+        } elsif ($line =~ m/^(?:flags|features)\s*:\s*(.*?)\s*$/) {
+            # s390x calls them 'features'
             $res->{flags} = $1 if !length $res->{flags};
         } elsif ($line =~ m/^physical id\s*:\s*(\d+)\s*$/i) {
-            $cpuid = $1;
-            $idhash->{$1} = 1 if not defined($idhash->{$1});
+            $topo->{socket} = $1;
+        } elsif ($line =~ m/^book id\s*:\s*(\d+)\s*$/i) {
+            $topo->{book} = $1;
+        } elsif ($line =~ m/^drawer id\s*:\s*(\d+)\s*$/i) {
+            $topo->{drawer} = $1;
         } elsif ($line =~ m/^cpu cores\s*:\s*(\d+)\s*$/i) {
-            $idhash->{$cpuid} = $1 if defined($idhash->{$cpuid});
+            $topo->{cores} = $1;
         } elsif ($line =~ m/^CPU implementer\s*:\s*(0x[0-9a-fA-F]+)\s*$/) {
             $cpu_implementer //= hex($1);
         } elsif ($line =~ m/^CPU part\s*:\s*(0x[0-9a-fA-F]+)\s*$/) {
             $cpu_part //= hex($1);
         }
     }
+    $flush_topology->();
 
     # arm64 has no 'model name'/'vendor_id'; derive them from the implementer and part IDs
     if ($res->{model} eq 'unknown' && defined($cpu_implementer)) {
@@ -126,8 +171,14 @@ sub parse_cpuinfo {
         }
     }
 
-    # Hardware Virtual Machine (Intel VT / AMD-V)
-    $res->{hvm} = $res->{flags} =~ m/\s(vmx|svm)\s/;
+    # s390x has no 'model name' either; derive it from the machine type
+    if ($res->{model} eq 'unknown' && defined($s390_machine)) {
+        $res->{model} = $s390_machine_types->{$s390_machine}
+            // sprintf('IBM machine type %04x', $s390_machine);
+    }
+
+    # Hardware Virtual Machine (Intel VT / AMD-V / s390x SIE)
+    $res->{hvm} = $res->{flags} =~ m/(?:^|\s)(?:vmx|svm|sie)(?:\s|$)/;
 
     $res->{sockets} = scalar(keys %$idhash) || 1;
 

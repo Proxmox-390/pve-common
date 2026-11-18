@@ -1,0 +1,108 @@
+vendor_id       : IBM/S390
+# processors    : 6
+bogomips per cpu: 18656.00
+max thread id   : 0
+features	: esan3 zarch stfle msa ldisp eimm dfp edat etf3eh highgprs te vx vxd vxe gs sie 
+facilities      : 0 1 2 3 4 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 30 31 32 33 34 35 36 37 38 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 57 58 59 60 64 65 66 67 68 69 70 71 72 73 75 76 77 78 80 81 82 128 129 130 131 132 133 134 135 138 139 141 142 144 145 146 156
+cache0          : level=1 type=Data scope=Private size=128K line_size=256 associativity=8
+cache1          : level=1 type=Instruction scope=Private size=128K line_size=256 associativity=8
+cache2          : level=2 type=Data scope=Private size=4096K line_size=256 associativity=8
+cache3          : level=2 type=Instruction scope=Private size=2048K line_size=256 associativity=8
+cache4          : level=3 type=Unified scope=Shared size=131072K line_size=256 associativity=32
+cache5          : level=4 type=Unified scope=Shared size=688128K line_size=256 associativity=42
+processor 0: version = 00,  identification = 012345,  machine = 3907
+processor 1: version = 00,  identification = 012345,  machine = 3907
+processor 2: version = 00,  identification = 012345,  machine = 3907
+processor 3: version = 00,  identification = 012345,  machine = 3907
+processor 4: version = 00,  identification = 012345,  machine = 3907
+processor 5: version = 00,  identification = 012345,  machine = 3907
+
+cpu number      : 0
+physical id     : 1
+core id         : 0
+book id         : 0
+drawer id       : 0
+dedicated       : 1
+address         : 0
+siblings        : 1
+cpu cores       : 1
+version         : 00
+identification  : 012345
+machine         : 3907
+cpu MHz dynamic : 4504
+cpu MHz static  : 4504
+
+cpu number      : 1
+physical id     : 0
+core id         : 1
+book id         : 0
+drawer id       : 0
+dedicated       : 1
+address         : 1
+siblings        : 5
+cpu cores       : 5
+version         : 00
+identification  : 012345
+machine         : 3907
+cpu MHz dynamic : 4504
+cpu MHz static  : 4504
+
+cpu number      : 2
+physical id     : 0
+core id         : 2
+book id         : 0
+drawer id       : 0
+dedicated       : 1
+address         : 2
+siblings        : 5
+cpu cores       : 5
+version         : 00
+identification  : 012345
+machine         : 3907
+cpu MHz dynamic : 4504
+cpu MHz static  : 4504
+
+cpu number      : 3
+physical id     : 0
+core id         : 3
+book id         : 0
+drawer id       : 0
+dedicated       : 1
+address         : 3
+siblings        : 5
+cpu cores       : 5
+version         : 00
+identification  : 012345
+machine         : 3907
+cpu MHz dynamic : 4504
+cpu MHz static  : 4504
+
+cpu number      : 4
+physical id     : 0
+core id         : 4
+book id         : 0
+drawer id       : 0
+dedicated       : 1
+address         : 4
+siblings        : 5
+cpu cores       : 5
+version         : 00
+identification  : 012345
+machine         : 3907
+cpu MHz dynamic : 4504
+cpu MHz static  : 4504
+
+cpu number      : 5
+physical id     : 0
+core id         : 5
+book id         : 0
+drawer id       : 0
+dedicated       : 1
+address         : 5
+siblings        : 5
+cpu cores       : 5
+version         : 00
+identification  : 012345
+machine         : 3907
+cpu MHz dynamic : 4504
+cpu MHz static  : 4504
