@@ -93,6 +93,36 @@ my $cpuinfo_tests = {
         cores => 1,
         hvm => '',
     },
+    's390x-z14-zr1-lpar' => { # LPAR with one IFL in a different socket than the other five
+        vendor => 'IBM/S390',
+        family => 0,
+        model => 'IBM z14 ZR1',
+        mhz => 4504,
+        cpus => 6,
+        sockets => 2,
+        cores => 6,
+        hvm => 1,
+    },
+    's390x-z16-smt-multi-drawer' => { # SMT-2, socket IDs repeat across drawers
+        vendor => 'IBM/S390',
+        family => 0,
+        model => 'IBM z16 A01',
+        mhz => 5200,
+        cpus => 8,
+        sockets => 2,
+        cores => 4,
+        hvm => 1,
+    },
+    's390x-kvm-guest' => { # no SIE (nested virtualization) and no MHz
+        vendor => 'IBM/S390',
+        family => 0,
+        model => 'IBM z15 T01',
+        mhz => 0,
+        cpus => 2,
+        sockets => 1,
+        cores => 2,
+        hvm => '',
+    },
 };
 
 subtest 'test cpuinfo parser' => sub {
