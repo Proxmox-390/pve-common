@@ -93,9 +93,9 @@ sub read_cpuinfo {
     my $cpuid = 0;
     my $idhash = {};
     my $count = 0;
-    my ($cpu_implementer, $cpu_part);
+    my ($cpu_implementer, $cpu_part, $s390_machine);
     while (defined(my $line = <$fh>)) {
-        if ($line =~ m/^processor\s*:\s*\d+\s*$/i) {
+        if ($line =~ m/^(?:processor|cpu number)\s*:\s*\d+\s*$/i) {
             $count++;
         } elsif ($line =~ m/^model\s+name\s*:\s*(.*)\s*$/i) {
             $res->{model} = $1 if $res->{model} eq 'unknown';
@@ -116,6 +116,8 @@ sub read_cpuinfo {
             $cpu_implementer //= hex($1);
         } elsif ($line =~ m/^CPU part\s*:\s*(0x[0-9a-fA-F]+)\s*$/) {
             $cpu_part //= hex($1);
+        } elsif ($line =~ m/^machine\s*:\s*(\d+)\s*$/) {
+            $s390_machine //= $1;
         }
     }
 
@@ -128,6 +130,10 @@ sub read_cpuinfo {
                 // sprintf('%s part 0x%03x', $vendor // 'ARM', $cpu_part);
         }
     }
+
+    # s390x has no 'model name' either; report the machine type, like lscpu does
+    $res->{model} = "IBM $s390_machine"
+        if $res->{vendor} eq 'IBM/S390' && $res->{model} eq 'unknown' && defined($s390_machine);
 
     # Hardware Virtual Machine (Intel VT / AMD-V)
     $res->{hvm} = $res->{flags} =~ m/\s(vmx|svm)\s/;
