@@ -70,4 +70,44 @@ subtest 'test kernel_version parser' => sub {
     }
 };
 
+# cpuinfo tests, fixtures in cpuinfo/
+
+my $cpuinfo_tests = {
+    'x86_64-2-socket' => {
+        vendor => 'GenuineIntel',
+        family => 6,
+        model => 'Intel(R) Xeon(R) Gold 6130 CPU @ 2.10GHz',
+        mhz => '2100.000',
+        cpus => 4,
+        sockets => 2,
+        cores => 4,
+        hvm => 1,
+    },
+    'aarch64-neoverse-n1' => {
+        vendor => 'ARM',
+        family => 0,
+        model => 'Neoverse-N1',
+        mhz => 0,
+        cpus => 4,
+        sockets => 1,
+        cores => 1,
+        hvm => '',
+    },
+};
+
+subtest 'test cpuinfo parser' => sub {
+    for my $name (sort keys %$cpuinfo_tests) {
+        open(my $fh, '<', "cpuinfo/$name") or die "unable to open cpuinfo/$name - $!\n";
+        my $res = PVE::ProcFSTools::parse_cpuinfo($fh);
+        close($fh);
+
+        my $expect = $cpuinfo_tests->{$name};
+        my $got = { map { $_ => $res->{$_} } keys %$expect };
+        is_deeply($got, $expect, "parsed cpuinfo of $name");
+    }
+
+    my $res = PVE::ProcFSTools::parse_cpuinfo(undef);
+    is($res->{model}, 'unknown', 'no cpuinfo results in defaults');
+};
+
 done_testing();

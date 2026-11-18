@@ -71,10 +71,8 @@ my $arm_cpu_parts = {
     },
 };
 
-sub read_cpuinfo {
-    my $fn = '/proc/cpuinfo';
-
-    return $cpuinfo if $cpuinfo;
+sub parse_cpuinfo {
+    my ($fh) = @_;
 
     my $res = {
         user_hz => $clock_ticks,
@@ -87,7 +85,6 @@ sub read_cpuinfo {
         flags => '',
     };
 
-    my $fh = IO::File->new($fn, "r");
     return $res if !$fh;
 
     my $cpuid = 0;
@@ -137,6 +134,18 @@ sub read_cpuinfo {
     $res->{cores} = sum(values %$idhash) || 1;
 
     $res->{cpus} = $count;
+
+    return $res;
+}
+
+sub read_cpuinfo {
+    my $fn = '/proc/cpuinfo';
+
+    return $cpuinfo if $cpuinfo;
+
+    my $fh = IO::File->new($fn, "r");
+    my $res = parse_cpuinfo($fh);
+    return $res if !$fh;
 
     $fh->close;
 

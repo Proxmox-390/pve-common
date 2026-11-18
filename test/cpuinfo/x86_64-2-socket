@@ -1,0 +1,63 @@
+processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 85
+model name	: Intel(R) Xeon(R) Gold 6130 CPU @ 2.10GHz
+stepping	: 4
+cpu MHz		: 2100.000
+cache size	: 22528 KB
+physical id	: 0
+siblings	: 2
+core id		: 0
+cpu cores	: 2
+fpu		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc vmx smx est tm2 ssse3 fma cx16 sse4_1 sse4_2 avx f16c rdrand avx2 avx512f
+bogomips	: 4200.00
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 85
+model name	: Intel(R) Xeon(R) Gold 6130 CPU @ 2.10GHz
+stepping	: 4
+cpu MHz		: 2100.000
+cache size	: 22528 KB
+physical id	: 0
+siblings	: 2
+core id		: 1
+cpu cores	: 2
+fpu		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc vmx smx est tm2 ssse3 fma cx16 sse4_1 sse4_2 avx f16c rdrand avx2 avx512f
+bogomips	: 4200.00
+
+processor	: 2
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 85
+model name	: Intel(R) Xeon(R) Gold 6130 CPU @ 2.10GHz
+stepping	: 4
+cpu MHz		: 2100.000
+cache size	: 22528 KB
+physical id	: 1
+siblings	: 2
+core id		: 0
+cpu cores	: 2
+fpu		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc vmx smx est tm2 ssse3 fma cx16 sse4_1 sse4_2 avx f16c rdrand avx2 avx512f
+bogomips	: 4200.00
+
+processor	: 3
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 85
+model name	: Intel(R) Xeon(R) Gold 6130 CPU @ 2.10GHz
+stepping	: 4
+cpu MHz		: 2100.000
+cache size	: 22528 KB
+physical id	: 1
+siblings	: 2
+core id		: 1
+cpu cores	: 2
+fpu		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc vmx smx est tm2 ssse3 fma cx16 sse4_1 sse4_2 avx f16c rdrand avx2 avx512f
+bogomips	: 4200.00
