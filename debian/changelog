@@ -1,3 +1,13 @@
+libpve-common-perl (9.2.12+s390x1) trixie; urgency=medium
+
+  * s390x port, rebased onto 9.2.12:
+    - procfs: cpuinfo: count the CPUs and report the machine type on s390x.
+    - procfs: cpuinfo: read the frequency (cpu MHz dynamic), the features
+      line as flags and sie as hardware virtualization support.
+    - procfs: decode the /proc/net/route addresses in host byte order.
+
+ -- Yvan Janssens <yvanj@cyber.gent>  Fri, 20 Nov 2026 14:16:10 +0100
+
 libpve-common-perl (9.2.12) trixie; urgency=medium
 
   * json schema: mark the API token of a remote endpoint, as used for remote
